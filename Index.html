@@ -1,0 +1,1108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#060807">
+<title>axis.sh | Security Intelligence</title>
+
+<style>
+:root{
+  --bg:#060807;
+  --panel:#0b0f0d;
+  --panel2:#0e1310;
+  --line:#1b241e;
+  --text:#edf5ee;
+  --muted:#77837b;
+  --green:#a8ff65;
+  --green-dark:#182713;
+  --danger:#ff6b6b;
+}
+
+*{box-sizing:border-box}
+
+html{
+  scroll-behavior:smooth;
+}
+
+body{
+  margin:0;
+  background:
+    radial-gradient(circle at 50% -10%,rgba(168,255,101,.12),transparent 35%),
+    var(--bg);
+  color:var(--text);
+  font-family:Inter,Arial,Helvetica,sans-serif;
+}
+
+a{
+  color:inherit;
+  text-decoration:none;
+}
+
+button,input{
+  font:inherit;
+}
+
+.nav{
+  height:68px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 6%;
+  border-bottom:1px solid var(--line);
+  background:rgba(6,8,7,.85);
+  backdrop-filter:blur(15px);
+  position:sticky;
+  top:0;
+  z-index:20;
+}
+
+.logo{
+  font-size:19px;
+  font-weight:850;
+  letter-spacing:-1px;
+}
+
+.logo-dot{
+  display:inline-block;
+  width:8px;
+  height:8px;
+  background:var(--green);
+  border-radius:50%;
+  margin-right:8px;
+  box-shadow:0 0 15px var(--green);
+}
+
+.logo-muted{
+  color:#56615a;
+}
+
+.nav-links{
+  display:flex;
+  gap:25px;
+  color:#758078;
+  font-size:12px;
+}
+
+.nav-links a:hover{
+  color:white;
+}
+
+.nav-button{
+  border:1px solid var(--line);
+  padding:9px 13px;
+  border-radius:7px;
+  font-size:12px;
+}
+
+.hero{
+  min-height:620px;
+  max-width:1050px;
+  margin:auto;
+  padding:110px 20px 80px;
+  text-align:center;
+  position:relative;
+}
+
+.hero:before{
+  content:"";
+  position:absolute;
+  width:550px;
+  height:300px;
+  left:50%;
+  top:50px;
+  transform:translateX(-50%);
+  background:radial-gradient(
+    circle,
+    rgba(168,255,101,.15),
+    transparent 68%
+  );
+  filter:blur(20px);
+  pointer-events:none;
+}
+
+.eyebrow{
+  position:relative;
+  color:#7b8780;
+  font-size:10px;
+  letter-spacing:2px;
+  font-family:monospace;
+}
+
+.green-dot{
+  display:inline-block;
+  width:6px;
+  height:6px;
+  background:var(--green);
+  border-radius:50%;
+  margin-right:7px;
+  box-shadow:0 0 12px var(--green);
+}
+
+.hero h1{
+  position:relative;
+  margin:22px 0;
+  font-size:clamp(55px,10vw,100px);
+  line-height:.9;
+  letter-spacing:-6px;
+}
+
+.green{
+  color:var(--green);
+}
+
+.hero p{
+  position:relative;
+  max-width:620px;
+  margin:auto;
+  color:var(--muted);
+  line-height:1.7;
+  font-size:14px;
+}
+
+.hero-actions{
+  position:relative;
+  display:flex;
+  justify-content:center;
+  gap:9px;
+  margin-top:28px;
+}
+
+.btn{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  border:1px solid var(--line);
+  padding:12px 16px;
+  border-radius:7px;
+  font-size:12px;
+}
+
+.btn-primary{
+  background:var(--green);
+  color:#071006;
+  border-color:var(--green);
+  font-weight:800;
+}
+
+.trust{
+  margin-top:22px;
+  color:#535e57;
+  font-size:9px;
+  letter-spacing:1px;
+}
+
+.section{
+  max-width:1120px;
+  margin:auto;
+  padding:80px 20px;
+}
+
+.label{
+  color:#5f6b63;
+  font:10px monospace;
+  letter-spacing:2px;
+  margin-bottom:18px;
+}
+
+/* DASHBOARD */
+
+.dashboard{
+  min-height:600px;
+  display:grid;
+  grid-template-columns:190px 1fr;
+  background:#090c0a;
+  border:1px solid var(--line);
+  border-radius:12px;
+  overflow:hidden;
+  box-shadow:0 30px 100px #000;
+}
+
+.sidebar{
+  border-right:1px solid var(--line);
+  padding:20px 12px;
+  display:flex;
+  flex-direction:column;
+}
+
+.sidebar-title{
+  color:#68736c;
+  font-size:11px;
+  margin:5px 9px 25px;
+}
+
+.side-link{
+  display:block;
+  padding:10px;
+  border-radius:6px;
+  color:#66716a;
+  font-size:12px;
+  margin-bottom:3px;
+}
+
+.side-link:hover,
+.side-link.active{
+  background:#121812;
+  color:#edf5ee;
+}
+
+.account{
+  margin-top:auto;
+  border-top:1px solid var(--line);
+  padding:15px 8px;
+  color:#68736d;
+  font-size:9px;
+  line-height:1.7;
+}
+
+.dashboard-main{
+  padding:27px;
+}
+
+.dashboard-top{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+}
+
+.dashboard-top small{
+  color:#5e6962;
+  font:9px monospace;
+  letter-spacing:1px;
+}
+
+.dashboard-top h2{
+  margin:7px 0 0;
+  font-size:22px;
+}
+
+.status{
+  color:#66716b;
+  font-size:10px;
+}
+
+.status-dot{
+  display:inline-block;
+  width:6px;
+  height:6px;
+  border-radius:50%;
+  background:var(--green);
+  margin-right:6px;
+}
+
+.search{
+  height:50px;
+  margin:25px 0 12px;
+  border:1px solid #263029;
+  background:#0c100d;
+  border-radius:7px;
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:0 12px;
+}
+
+.search input{
+  flex:1;
+  min-width:0;
+  border:0;
+  outline:0;
+  color:white;
+  background:transparent;
+  font-size:12px;
+}
+
+.search input::placeholder{
+  color:#59645d;
+}
+
+.search button{
+  border:1px solid #34452f;
+  background:var(--green-dark);
+  color:var(--green);
+  padding:7px 10px;
+  border-radius:5px;
+  font-size:9px;
+  cursor:pointer;
+}
+
+.metrics{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:9px;
+}
+
+.metric{
+  border:1px solid var(--line);
+  border-radius:7px;
+  padding:14px;
+}
+
+.metric small{
+  color:#58645d;
+  font:9px monospace;
+}
+
+.metric strong{
+  display:block;
+  font-size:22px;
+  margin:8px 0;
+}
+
+.metric em{
+  color:var(--green);
+  font-size:9px;
+  font-style:normal;
+}
+
+.results{
+  margin-top:10px;
+  border:1px solid var(--line);
+  border-radius:7px;
+}
+
+.results-header{
+  padding:13px;
+  border-bottom:1px solid var(--line);
+  color:#9aa49e;
+  font-size:11px;
+}
+
+.result{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:13px;
+  border-bottom:1px solid #151b17;
+}
+
+.result:last-child{
+  border-bottom:0;
+}
+
+.result-icon{
+  width:30px;
+  height:30px;
+  border:1px solid #263029;
+  border-radius:6px;
+  display:grid;
+  place-items:center;
+  color:#89948d;
+}
+
+.result b{
+  font-size:11px;
+}
+
+.result small{
+  display:block;
+  color:#59645d;
+  font-size:9px;
+  margin-top:3px;
+}
+
+.risk{
+  margin-left:auto;
+  color:var(--green);
+  font:9px monospace;
+}
+
+/* FEATURES */
+
+.features{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:10px;
+}
+
+.feature{
+  min-height:190px;
+  border:1px solid var(--line);
+  background:#0a0d0b;
+  border-radius:8px;
+  padding:24px;
+}
+
+.feature-number{
+  color:#59645d;
+  font:9px monospace;
+}
+
+.feature h3{
+  margin-top:45px;
+  font-size:17px;
+}
+
+.feature p{
+  color:#6d7871;
+  line-height:1.6;
+  font-size:11px;
+}
+
+/* PRICING */
+
+.price-box{
+  border:1px solid #293529;
+  border-radius:12px;
+  background:linear-gradient(135deg,#0b100c,#0a0e0c);
+  padding:30px;
+  display:grid;
+  grid-template-columns:1fr 350px;
+  gap:30px;
+}
+
+.price-box h2{
+  font-size:65px;
+  letter-spacing:-4px;
+  margin:12px 0 0;
+}
+
+.price-box p{
+  color:#6d7871;
+  font-size:12px;
+}
+
+.checks{
+  display:grid;
+  gap:10px;
+  margin-top:25px;
+  color:#a0aaa4;
+  font-size:12px;
+}
+
+.checkout{
+  border:1px solid #2a372b;
+  background:#0a100b;
+  border-radius:9px;
+  padding:22px;
+}
+
+.ltc-icon{
+  width:45px;
+  height:45px;
+  display:grid;
+  place-items:center;
+  border-radius:50%;
+  background:#142010;
+  border:1px solid #405337;
+  color:var(--green);
+  font-size:20px;
+  font-weight:900;
+}
+
+.checkout h3{
+  margin:18px 0 4px;
+}
+
+.address-label{
+  color:#657068;
+  font:9px monospace;
+  margin-top:20px;
+}
+
+.address{
+  margin-top:7px;
+  border:1px solid #273128;
+  background:#080c09;
+  border-radius:6px;
+  padding:11px;
+  font:10px monospace;
+  color:#b7ff8c;
+  word-break:break-all;
+}
+
+.copy{
+  width:100%;
+  margin-top:9px;
+  padding:11px;
+  border:1px solid #354832;
+  background:#182414;
+  color:var(--green);
+  border-radius:6px;
+  cursor:pointer;
+  font-weight:700;
+}
+
+.copy.copied{
+  background:#20351a;
+}
+
+.qr{
+  margin:15px auto 0;
+  width:145px;
+  height:145px;
+  background:white;
+  border-radius:7px;
+  padding:8px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.qr img{
+  width:100%;
+  height:100%;
+}
+
+.checkout-note{
+  color:#4f5a53;
+  text-align:center;
+  font-size:8px;
+  margin-top:10px;
+}
+
+/* FOOTER */
+
+footer{
+  border-top:1px solid var(--line);
+  padding:28px 6%;
+  display:flex;
+  justify-content:space-between;
+  color:#515c55;
+  font-size:10px;
+}
+
+/* MOBILE */
+
+@media(max-width:720px){
+
+  .nav{
+    padding:0 18px;
+  }
+
+  .nav-links{
+    display:none;
+  }
+
+  .hero{
+    min-height:570px;
+    padding-top:90px;
+  }
+
+  .hero h1{
+    font-size:58px;
+    letter-spacing:-4px;
+  }
+
+  .hero-actions{
+    flex-direction:column;
+  }
+
+  .btn{
+    width:100%;
+  }
+
+  .dashboard{
+    grid-template-columns:1fr;
+  }
+
+  .sidebar{
+    display:none;
+  }
+
+  .dashboard-main{
+    padding:18px;
+  }
+
+  .dashboard-top{
+    gap:10px;
+  }
+
+  .metrics{
+    grid-template-columns:1fr;
+  }
+
+  .features{
+    grid-template-columns:1fr;
+  }
+
+  .price-box{
+    grid-template-columns:1fr;
+    padding:20px;
+  }
+
+  footer{
+    display:grid;
+    gap:10px;
+  }
+
+}
+</style>
+</head>
+
+<body>
+
+<nav class="nav">
+
+  <a href="#" class="logo">
+    <span class="logo-dot"></span>
+    axis<span class="logo-muted">.sh</span>
+  </a>
+
+  <div class="nav-links">
+    <a href="#workspace">Workspace</a>
+    <a href="#features">Features</a>
+    <a href="#pricing">Access</a>
+  </div>
+
+  <a href="#pricing" class="nav-button">
+    Get access
+  </a>
+
+</nav>
+
+
+<section class="hero">
+
+  <div class="eyebrow">
+    <span class="green-dot"></span>
+    CYBER SECURITY INTELLIGENCE
+  </div>
+
+  <h1>
+    Find the signal.<br>
+    <span class="green">Follow the axis.</span>
+  </h1>
+
+  <p>
+    axis.sh is a focused intelligence workspace for defensive
+    security research, indicator enrichment and evidence-led
+    investigations.
+  </p>
+
+  <div class="hero-actions">
+
+    <a href="#workspace" class="btn btn-primary">
+      Open workspace →
+    </a>
+
+    <a href="#pricing" class="btn">
+      View access
+    </a>
+
+  </div>
+
+  <div class="trust">
+    SOURCE-ATTRIBUTED · MOBILE FIRST · DEFENSIVE RESEARCH
+  </div>
+
+</section>
+
+
+<section id="workspace" class="section">
+
+  <div class="label">
+    01 / WORKSPACE
+  </div>
+
+  <div class="dashboard">
+
+    <aside class="sidebar">
+
+      <div class="sidebar-title">
+        AXIS / CONSOLE
+      </div>
+
+      <a class="side-link active" href="#">
+        ⌕ Search
+      </a>
+
+      <a class="side-link" href="#features">
+        ◈ Intelligence
+      </a>
+
+      <a class="side-link" href="#features">
+        ⌁ Graph
+      </a>
+
+      <a class="side-link" href="#features">
+        ▣ Reports
+      </a>
+
+      <a class="side-link" href="#pricing">
+        ◇ Monitors
+      </a>
+
+      <div class="account">
+        ANALYST<br>
+        <span style="color:#a8ff65">
+          ● PRO WORKSPACE
+        </span>
+      </div>
+
+    </aside>
+
+
+    <main class="dashboard-main">
+
+      <div class="dashboard-top">
+
+        <div>
+          <small>
+            WORKSPACE / INVESTIGATE
+          </small>
+
+          <h2>
+            Threat lookup
+          </h2>
+        </div>
+
+        <div class="status">
+          <span class="status-dot"></span>
+          Systems operational
+        </div>
+
+      </div>
+
+
+      <div class="search">
+
+        <span>⌕</span>
+
+        <input
+          id="searchInput"
+          type="text"
+          placeholder="Search IP, domain, URL or SHA-256..."
+        >
+
+        <button onclick="runSearch()">
+          SEARCH
+        </button>
+
+      </div>
+
+
+      <div class="metrics">
+
+        <div class="metric">
+          <small>INDICATORS</small>
+          <strong>12,481</strong>
+          <em>+8.4%</em>
+        </div>
+
+        <div class="metric">
+          <small>MONITORED</small>
+          <strong>247</strong>
+          <em>+12</em>
+        </div>
+
+        <div class="metric">
+          <small>ALERTS</small>
+          <strong>18</strong>
+          <em>3 new</em>
+        </div>
+
+      </div>
+
+
+      <div class="results">
+
+        <div class="results-header">
+          Recent investigations
+        </div>
+
+        <div class="result">
+
+          <div class="result-icon">
+            ◎
+          </div>
+
+          <div>
+            <b>example.net</b>
+            <small>
+              DOMAIN · DNS / CERTIFICATE
+            </small>
+          </div>
+
+          <span class="risk">
+            LOW
+          </span>
+
+        </div>
+
+
+        <div class="result">
+
+          <div class="result-icon">
+            ◉
+          </div>
+
+          <div>
+            <b>185.199.110.153</b>
+            <small>
+              IP · REPUTATION / INFRASTRUCTURE
+            </small>
+          </div>
+
+          <span class="risk">
+            MEDIUM
+          </span>
+
+        </div>
+
+
+        <div class="result">
+
+          <div class="result-icon">
+            #
+          </div>
+
+          <div>
+            <b>4d9f...a81c</b>
+            <small>
+              HASH · FILE REPUTATION
+            </small>
+          </div>
+
+          <span class="risk">
+            LOW
+          </span>
+
+        </div>
+
+      </div>
+
+    </main>
+
+  </div>
+
+</section>
+
+
+<section id="features" class="section">
+
+  <div class="label">
+    02 / FEATURES
+  </div>
+
+  <div class="features">
+
+    <article class="feature">
+
+      <div class="feature-number">
+        01
+      </div>
+
+      <h3>
+        Indicator enrichment
+      </h3>
+
+      <p>
+        Structure public security intelligence around domains,
+        IPs, URLs and hashes with clear source attribution.
+      </p>
+
+    </article>
+
+
+    <article class="feature">
+
+      <div class="feature-number">
+        02
+      </div>
+
+      <h3>
+        Investigation graph
+      </h3>
+
+      <p>
+        Turn related indicators into a visual map so
+        infrastructure relationships are easier to understand.
+      </p>
+
+    </article>
+
+
+    <article class="feature">
+
+      <div class="feature-number">
+        03
+      </div>
+
+      <h3>
+        Evidence reports
+      </h3>
+
+      <p>
+        Build clean reports with timestamps, source references
+        and analyst notes for defensive investigations.
+      </p>
+
+    </article>
+
+  </div>
+
+</section>
+
+
+<section id="pricing" class="section">
+
+  <div class="label">
+    03 / ACCESS
+  </div>
+
+  <div class="price-box">
+
+    <div>
+
+      <div style="
+        font:10px monospace;
+        color:#6c7770;
+        letter-spacing:1px;
+      ">
+        AXIS ACCESS · ONE-TIME
+      </div>
+
+      <h2>
+        $10
+      </h2>
+
+      <p>
+        USD equivalent · Litecoin checkout
+      </p>
+
+      <div class="checks">
+
+        <span>✓ Full workspace access</span>
+        <span>✓ Indicator enrichment UI</span>
+        <span>✓ Investigation reports</span>
+        <span>✓ Fair-use limits</span>
+
+      </div>
+
+    </div>
+
+
+    <div class="checkout">
+
+      <div class="ltc-icon">
+        Ł
+      </div>
+
+      <h3>
+        Pay with Litecoin
+      </h3>
+
+      <p>
+        Send the required LTC amount to the receiving
+        address below.
+      </p>
+
+
+      <div class="address-label">
+        LITECOIN RECEIVING ADDRESS
+      </div>
+
+      <div id="ltcAddress" class="address">
+        Ld3kMxyAvtNUk15JE19QHaGJRZnEBhN5dC
+      </div>
+
+      <button
+        id="copyButton"
+        class="copy"
+        onclick="copyAddress()"
+      >
+        Copy Litecoin address
+      </button>
+
+
+      <div class="qr">
+
+        <img
+          alt="Litecoin payment QR code"
+          src="https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=litecoin%3ALd3kMxyAvtNUk15JE19QHaGJRZnEBhN5dC"
+        >
+
+      </div>
+
+
+      <div class="checkout-note">
+        $10 USD equivalent · calculate the live LTC amount at checkout
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<footer>
+
+  <div class="logo">
+    <span class="logo-dot"></span>
+    axis<span class="logo-muted">.sh</span>
+  </div>
+
+  <span>
+    © 2026 axis.sh
+  </span>
+
+  <span>
+    Defensive security intelligence
+  </span>
+
+</footer>
+
+
+<script>
+
+function copyAddress(){
+
+  const address =
+    document.getElementById("ltcAddress").innerText;
+
+  const button =
+    document.getElementById("copyButton");
+
+  navigator.clipboard.writeText(address)
+    .then(function(){
+
+      button.innerText = "Copied ✓";
+      button.classList.add("copied");
+
+      setTimeout(function(){
+
+        button.innerText =
+          "Copy Litecoin address";
+
+        button.classList.remove("copied");
+
+      },2000);
+
+    })
+    .catch(function(){
+
+      alert("Copy failed. Hold the address and copy it manually.");
+
+    });
+
+}
+
+
+function runSearch(){
+
+  const input =
+    document.getElementById("searchInput");
+
+  const value =
+    input.value.trim();
+
+  if(!value){
+
+    alert("Enter an indicator first.");
+
+    return;
+
+  }
+
+  alert(
+    "Demo investigation queued for:\\n\\n" + value
+  );
+
+}
+
+</script>
+
+</body>
+</html>
